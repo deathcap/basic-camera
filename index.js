@@ -13,18 +13,6 @@ function noclip(position) {
   this.cameraVector = vec3.create()
 }
 
-noclip.prototype.updateCameraVector = function(v, m) {
-  // extract the direction vector (v) from 3x3 rotation subset of matrix (m)
-  // see THREE.js Vector3 transformDirection, and voxel-view cameraVector()
-
-  v[0] = m[0] + m[4] + m[8]
-  v[1] = m[1] + m[5] + m[9]
-  v[2] = m[2] + m[6] + m[10]
-
-  vec3.normalize(v, v)
-}
-
-
 noclip.prototype.view = function(output) {
   if (!output) output = mat4.create()
 
@@ -32,7 +20,9 @@ noclip.prototype.view = function(output) {
   mat4.rotateY(output, output, this.rotationY)
   mat4.rotateZ(output, output, this.rotationZ)
 
-  this.updateCameraVector(this.cameraVector, output)
+  this.cameraVector[0] = output[2]
+  this.cameraVector[1] = output[6]
+  this.cameraVector[2] = output[10]
 
   mat4.translate(output
     , output
